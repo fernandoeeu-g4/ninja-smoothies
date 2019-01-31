@@ -1,0 +1,57 @@
+<template>
+  <div class="container add-smoothie">
+    <h2 class="center-align indigo-text">Add New Smoothie Recipe</h2>
+    <form @submit.prevent="AddSmoothie">
+      <div class="field title">
+        <label for="title">Smoothied Title:</label>
+        <input type="text" name="title" v-model="title">
+      </div>
+      <div class="field add-ingredient">
+        <label for="add-ingredient">Add an ingredient</label>
+        <input @keydown.tab="addIng" v-model="another" type="text" name="add-ingredient">
+      </div>
+      <div class="field center-align">
+        <button class="btn pink">Add Smoothie</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'AddSmoothie',
+  data() {
+    return {
+      title: null,
+      another: null,
+      ingredients: []
+    }
+  },
+  methods: {
+    AddSmoothie() {
+      console.log(this.title)
+    },
+    addIng() {
+      if (this.another) {
+        this.ingredients.push(this.another)
+        console.log(this.ingredients)
+      }
+    }
+  }
+}
+</script>
+
+<style>
+.add-smoothie {
+  margin-top: 60px;
+  padding: 20px;
+  max-width: 500px;
+}
+.add-smoothie h2 {
+  font-size: 2em;
+  margin: 20px auto;
+}
+.add-smoothie .field {
+  margin: 20px auto;
+}
+</style>
