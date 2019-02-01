@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import db from '@/firebase/init'
 
 Vue.use(Vuex)
+Vue.config.devtools = true
 
 export const store = new Vuex.Store({
   state: {
@@ -22,6 +23,9 @@ export const store = new Vuex.Store({
         })
       })
 
+    },
+    CLEAR_SMOOTHIE: (state) => {
+      state.smoothies = []
     }
   },
   getters: {

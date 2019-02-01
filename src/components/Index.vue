@@ -10,6 +10,11 @@
           </li>
         </ul>
       </div>
+      <span class="btn-floating btn-large halfway-fab pink">
+        <router-link :to="{ name: 'EditSmoothie', params: {smoothie_slug: smoothie.slug} }">
+          <i class="material-icons edit">edit</i>
+        </router-link>
+      </span>
     </div>
   </div>
 </template>
@@ -26,7 +31,10 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["ADD_SMOOTHIE", "REMOVE_SMOOTHIE"]),
+    ...mapMutations(["ADD_SMOOTHIE", "REMOVE_SMOOTHIE", "CLEAR_SMOOTHIE"]),
+    clearSmoothie() {
+      this.CLEAR_SMOOTHIE()
+    },
     addSmoothie: function(smoothie) {
       this.ADD_SMOOTHIE(smoothie)
     },
@@ -41,7 +49,7 @@ export default {
   },
   created() {
     // fetch data from firestore
-
+    this.clearSmoothie()
     db.collection('smoothies').get()
     .then(snapshot => {
       snapshot.forEach(doc => {
@@ -81,5 +89,10 @@ export default {
   cursor: pointer;
   color: #AAA;
   font-size: 1.4em;
+}
+
+.index .edit {
+  font-size: 1.4em;
+  cursor: pointer;
 }
 </style>

@@ -6,9 +6,10 @@
         <label for="title">Smoothied Title:</label>
         <input type="text" name="title" v-model="title">
       </div>
-      <div v-for="(ing, index) in ingredients" :key="index">
+      <div v-for="(ing, index) in ingredients" :key="index" class="field">
         <label for="ingredient">Ingredient:</label>
         <input type="text" name="ingredient" v-model="ingredients[index]">
+        <i class="material-icons delete" @click="deleteIng(ing)">delete</i>
       </div>
       <div class="field add-ingredient">
         <label for="add-ingredient">Add an ingredient</label>
@@ -24,6 +25,9 @@
 
 <script>
 import db from "@/firebase/init";
+import { mapMutations } from 'vuex'
+
+import slugify from 'slugify'
 
 export default {
   name: "AddSmoothie",
@@ -32,7 +36,7 @@ export default {
       title: null,
       another: null,
       feedback: null,
-      slug: "",
+      slug: null,
       ingredients: []
     };
   },
@@ -44,12 +48,21 @@ export default {
         this.feedback = "You must add at least one ingredient";
       } else {
         this.feedback = null;
-        this.generateSlug();
-        console.log(this.slug);
-        // db.collections("smoothie").add({
-        //   ingredients: this.ingredients,
-        //   slug: this.sl
-        // });
+        // create slug
+        this.slug = slugify(this.title, {
+          replacement: '-',
+          remove: /[$*_+~.()'"!\-:@]/g,
+          lower: true
+        })
+        db.collection("smoothies").add({
+          ingredients: this.ingredients,
+          slug: this.slug,
+          title: this.title
+        }).then(() => {
+          this.$router.push({ name: 'Index'})
+        }).catch(err => {
+          console.log(err)
+        })
       }
     },
     addIng() {
@@ -61,9 +74,11 @@ export default {
         this.feedback = "You must enter a value to add an in";
       }
     },
-    generateSlug() {
-      this.slug = str.toLowerCase(str.replace(" ", "-"));
-    }
+    deleteIng(ingredient) {
+      this.ingredients = this.ingredients.filter(ing => {
+        return ing !== ingredient
+      })
+    },
   }
 };
 </script>
@@ -80,5 +95,14 @@ export default {
 }
 .add-smoothie .field {
   margin: 20px auto;
+  position: relative;
+}
+.add-smoothie .delete {
+  position: absolute;
+  right: 0;
+  bottom: 16px;
+  color: #AAA;
+  font-size: 1.4em;
+  cursor: pointer;
 }
 </style>
